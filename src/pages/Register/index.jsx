@@ -2,11 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../../assets/logo.svg";
-import { Input } from "../../Input";
+import logo from "../../assets/logo.svg";
+import { Input } from "../../components/Input";
 import { StyleRegister } from "./styled";
-import { Zod } from "../../Zod";
-import { Api } from "../../../services";
+import { Zod } from "../../components/Zod";
+import { api } from "../../services/index";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,7 +23,7 @@ const RegisterPage = () => {
 
   const handleRegister = async (data) => {
     try {
-      await Api.post("users", { ...data, course_module: date });
+      await api.post("users", { ...data, course_module: date });
       toast.success("Conta criada com sucesso!");
       setTimeout(() => {
         navigate("/");

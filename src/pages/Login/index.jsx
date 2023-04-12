@@ -1,14 +1,14 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "../../Input";
+import { Input } from "../../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import logo from "../../../assets/logo.svg";
-import { Api } from "../../../services";
-import { ZodLogin } from "../../Zod";
+import logo from "../../assets/logo.svg";
+import { api } from "../../services";
+import { ZodLogin } from "../../components/Zod";
 import { Styledlogin } from "./styled";
 import { toast } from "react-toastify";
 
-const LoginPage = () => {
+const LoginPage = ({ setUser }) => {
   const {
     register,
     handleSubmit,
@@ -19,20 +19,22 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (data) => {
+  const HandleLogin = async (data) => {
     try {
-      await Api.post("sessions", data).then((reponse) => {
-        localStorage.setItem("@token", JSON.stringify(reponse.data.token));
-        localStorage.setItem("@userid", JSON.stringify(reponse.data.user.id));
-        localStorage.setItem("@user", JSON.stringify(reponse.data.user));
-      });
-      const token = JSON.parse(localStorage.getItem("@token"));
+      const response = await api.post("sessions", data);
+      const { user: userRes } = response.data;
+      setUser(userRes);
 
-      if (token) {
-        navigate("dashboard");
-      }
+      localStorage.setItem("@TOKEN", JSON.stringify(response.data.token));
+      localStorage.setItem("@USERID", JSON.stringify(response.data.user.id));
     } catch (error) {
       toast.error("Email ou senha inválido!");
+    }
+
+    const token = JSON.parse(localStorage.getItem("@TOKEN"));
+
+    if (token) {
+      navigate("dashboard");
     }
   };
 
@@ -41,7 +43,7 @@ const LoginPage = () => {
       <header>
         <img src={logo} alt="logo" />
       </header>
-      <form onSubmit={handleSubmit(handleLogin)}>
+      <form onSubmit={handleSubmit(HandleLogin)}>
         <h2>Login</h2>
         <Input
           type={"email"}
