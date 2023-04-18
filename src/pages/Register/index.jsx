@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import { Input } from "../../components/Input";
 import { StyleRegister } from "./styled";
@@ -18,7 +18,17 @@ const RegisterPage = () => {
     resolver: zodResolver(Zod),
   });
 
-  const { setData, handleRegister } = useContext(UserContext);
+  const { user, setData, handleRegister, loading } = useContext(UserContext);
+
+  const navigate = useNavigate();
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (user) {
+    navigate("/dashboard");
+  }
 
   return (
     <StyleRegister className="container_register">

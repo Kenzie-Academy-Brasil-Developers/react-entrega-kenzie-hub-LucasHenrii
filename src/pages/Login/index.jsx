@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import logo from "../../assets/logo.svg";
@@ -17,7 +17,17 @@ const LoginPage = () => {
     resolver: zodResolver(ZodLogin),
   });
 
-  const { HandleLogin } = useContext(UserContext);
+  const { HandleLogin, user, loading } = useContext(UserContext);
+
+  const navigate = useNavigate();
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (user) {
+    navigate("/dashboard");
+  }
 
   return (
     <Styledlogin className="container_login">

@@ -9,6 +9,15 @@ export const GlobalStyled = createGlobalStyle`
     line-height:1.5;
 }
 
+::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    ::-webkit-scrollbar-thumb{
+        width: 9px;
+        background-color:#868E96 ;
+    }
+
 body{
     width: 100vw;
     height: 100vh;
