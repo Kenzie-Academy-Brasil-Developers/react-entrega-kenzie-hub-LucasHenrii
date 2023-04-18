@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import { Input } from "../../components/Input";
 import { StyleRegister } from "./styled";
 import { Zod } from "../../components/Zod";
-import { api } from "../../services/index";
-import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 import "react-toastify/dist/ReactToastify.css";
 
 const RegisterPage = () => {
@@ -18,20 +17,8 @@ const RegisterPage = () => {
   } = useForm({
     resolver: zodResolver(Zod),
   });
-  const [date, setData] = useState([]);
-  const navigate = useNavigate();
 
-  const handleRegister = async (data) => {
-    try {
-      await api.post("users", { ...data, course_module: date });
-      toast.success("Conta criada com sucesso!");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    } catch (error) {
-      toast.error("Ops! Algo deu errado");
-    }
-  };
+  const { setData, handleRegister } = useContext(UserContext);
 
   return (
     <StyleRegister className="container_register">

@@ -1,10 +1,24 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
-import { api } from "../../services";
+import { AddModal, EditModal } from "../../components/Modal";
+import { TechContext } from "../../contexts/TechContext";
+import { UserContext } from "../../contexts/UserContext";
 import { StyledDash } from "./styled";
 
-const Dashboard = ({ user, setUser }) => {
+const Dashboard = () => {
+  const {
+    user,
+    setUser,
+    isAddModalOpen,
+    setIsAddModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
+    loading,
+  } = useContext(UserContext);
+
+  const { setEditTec, setDeleteTec } = useContext(TechContext);
+
   const navigate = useNavigate();
 
   const loggout = () => {
@@ -14,18 +28,13 @@ const Dashboard = ({ user, setUser }) => {
     navigate("/");
   };
 
-  useEffect(() => {
-    const loadUser = async () => {
-      if (!user) {
-        const id = JSON.parse(localStorage.getItem("@USERID"));
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
-        const response = await api.get(`users/${id}`);
-
-        setUser(response.data);
-      }
-    };
-    loadUser();
-  }, []);
+  if (!user) {
+    navigate("/");
+  }
 
   return (
     <StyledDash className="container_dashboard">
@@ -43,12 +52,37 @@ const Dashboard = ({ user, setUser }) => {
       </header>
 
       <main>
-        <div className="container">
-          <h1>Que pena! Estamos em desenvolvimento :(</h1>
-          <p>
-            Nossa aplicação está em desenvolvimento, em breve teremos novidades
-          </p>
-        </div>
+        <section className="container">
+          <div className="div_container">
+            <div className="div_header">
+              <h2>Tecnologias</h2>
+              <button onClick={() => setIsAddModalOpen(true)}>+</button>
+            </div>
+            {isAddModalOpen ? <AddModal /> : null}
+          </div>
+          <ul>
+            {user.techs.length > 0 ? (
+              user.techs.map((use) => (
+                <li
+                  onClick={() =>
+                    setIsEditModalOpen(
+                      true,
+                      setEditTec(use),
+                      setDeleteTec(use.id)
+                    )
+                  }
+                  key={use.id}
+                >
+                  <h3>{use.title}</h3>
+                  <p>{use.status}</p>
+                </li>
+              ))
+            ) : (
+              <p className="p_empty_list">Adicione uma tecnologia</p>
+            )}
+          </ul>
+          {isEditModalOpen ? <EditModal /> : null}
+        </section>
       </main>
     </StyledDash>
   );

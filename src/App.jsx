@@ -4,11 +4,11 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import { GlobalStyled } from "./styles/globalStyled";
 import { ToastContainer } from "react-toastify";
-import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserContext);
 
   return (
     <>

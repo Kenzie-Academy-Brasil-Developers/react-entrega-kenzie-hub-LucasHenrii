@@ -27,3 +27,7 @@ export const ZodLogin = z.object({
     .email("Forneça um email válido"),
   password: z.string().nonempty("Senha é obrigatória"),
 });
+
+export const ZodModal = z.object({
+  text: z.string().nonempty("Campo obrigatório"),
+});

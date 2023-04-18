@@ -1,14 +1,14 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Input } from "../../components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import logo from "../../assets/logo.svg";
-import { api } from "../../services";
 import { ZodLogin } from "../../components/Zod";
 import { Styledlogin } from "./styled";
-import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = () => {
   const {
     register,
     handleSubmit,
@@ -17,26 +17,7 @@ const LoginPage = ({ setUser }) => {
     resolver: zodResolver(ZodLogin),
   });
 
-  const navigate = useNavigate();
-
-  const HandleLogin = async (data) => {
-    try {
-      const response = await api.post("sessions", data);
-      const { user: userRes } = response.data;
-      setUser(userRes);
-
-      localStorage.setItem("@TOKEN", JSON.stringify(response.data.token));
-      localStorage.setItem("@USERID", JSON.stringify(response.data.user.id));
-    } catch (error) {
-      toast.error("Email ou senha inválido!");
-    }
-
-    const token = JSON.parse(localStorage.getItem("@TOKEN"));
-
-    if (token) {
-      navigate("dashboard");
-    }
-  };
+  const { HandleLogin } = useContext(UserContext);
 
   return (
     <Styledlogin className="container_login">
